@@ -1,0 +1,9 @@
+extends base.pug
+include components/video
+
+block content
+    h1 Search Video 
+    each video in videos
+        +video(video)
+    else
+        li Sorry nothing found.
