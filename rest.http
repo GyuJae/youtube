@@ -1,0 +1,14 @@
+# Global
+// http://localhost:3000
+
+// http://localhost:3000/join
+
+# User
+// http://localhost:3000/users/edit
+
+// http://localhost:3000/users/remove
+
+# Video
+// http://localhost:3000/videos/watch
+
+//http://localhost:3000/videos/edit
