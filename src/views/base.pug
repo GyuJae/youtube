@@ -1,8 +1,19 @@
 doctype html
 html(lang="ko")
     head
-        title #{pageTitle || NotFound} | Youtube
+        title #{pageTitle || NotFound} | #{siteName}
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body
+        header 
+            if loggedIn
+                li
+                    a(href="/logout")  Log Out
+                li
+                    a(href="/my-profile") #{loggedInUser.name}의 Profile
+            else
+                li
+                    a(href="/join") Join
+                li
+                    a(href="/login") Login
         block content
     include components/footer

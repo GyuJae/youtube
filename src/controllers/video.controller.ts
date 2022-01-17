@@ -23,9 +23,8 @@ export const watch = async (req: Request, res: Response): Promise<any> => {
     } = req;
     const video = await VideoModel.findById(id);
     if (!video) {
-      return res.render("404", { pageTitle: VIDEO_NOT_FOUND });
+      return res.status(404).render("404", { pageTitle: VIDEO_NOT_FOUND });
     }
-    console.log(video);
     return res
       .status(200)
       .render("watch", { pageTitle: video?.title || "Watch", video });
@@ -94,7 +93,7 @@ export const search = async (req: Request, res: Response): Promise<any> => {
         $regex: new RegExp(`${keyword}$`, "i"),
       },
     });
-    return res.render("search", { pageTitle: keyword, videos });
+    return res.status(200).render("search", { pageTitle: keyword, videos });
   } catch {
     return res.redirect("/");
   }
@@ -119,7 +118,9 @@ export const postUpload = async (req: Request, res: Response): Promise<any> => {
     });
     return res.redirect("/");
   } catch (error) {
-    return res.render("upload", { pageTitle: "Upload", errorMessage: error });
+    return res
+      .status(400)
+      .render("upload", { pageTitle: "Upload", errorMessage: error });
   }
 };
 
