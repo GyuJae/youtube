@@ -3,12 +3,11 @@ extends base.pug
 block content
     h1 Login
 
-    main
-        if errorMessage
-            span=errorMessage  
-        form(method="POST")
-            input(placeholder="Username", name="username", type="text", required)
-            input(placeholder="Password", name="password", type="password", required)
-            input(type="submit", value="Login")  
-            br
-            a(href="/users/github/start") Continue with Github &rarr;
+    if errorMessage
+        span=errorMessage  
+    form(method="POST")
+        input(placeholder="Username", name="username", type="text", required)
+        input(placeholder="Password", name="password", type="password", required)
+        input(type="submit", value="Login")  
+        br
+        a(href="/users/github/start") Continue with Github &rarr;

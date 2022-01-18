@@ -5,15 +5,17 @@ html(lang="ko")
         link(rel="stylesheet" href="https://unpkg.com/mvp.css")
     body
         header 
-            if loggedIn
-                li
-                    a(href="/users/logout")  Log Out
-                li
-                    a(href="/my-profile") #{loggedInUser.name}의 Profile
-            else
-                li
-                    a(href="/join") Join
-                li
-                    a(href="/login") Login
-        block content
+            nav
+                if loggedIn
+                    li
+                        a(href="/users/logout")  Log Out
+                    li
+                        a(href="/users/edit") #{loggedInUser.name}의 Profile
+                else
+                    li
+                        a(href="/join") Join
+                    li
+                        a(href="/login") Login
+        main
+            block content
     include components/footer
