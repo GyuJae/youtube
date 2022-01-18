@@ -6,6 +6,8 @@ interface IUser {
   password: string;
   name: string;
   location?: string;
+  socialOnly: boolean;
+  avatarUrl?: string;
 }
 
 const schema = new Schema<IUser>({
@@ -15,9 +17,11 @@ const schema = new Schema<IUser>({
     unique: true,
   },
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  socialOnly: { type: Boolean, default: false },
+  password: { type: String },
   name: { type: String, required: true },
   location: String,
+  avatarUrl: String,
 });
 
 const UserModel = model("User", schema);

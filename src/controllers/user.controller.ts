@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import UserModel from "../models/User";
+import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
 const BCRYPT_SALT = 10;
@@ -77,7 +78,7 @@ export const postLogin = async (req: Request, res: Response): Promise<any> => {
     const {
       body: { username, password },
     } = req;
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ username, socialOnly: false });
     if (!user) {
       return res.status(400).render("login", {
         pageTitle,
@@ -101,17 +102,112 @@ export const postLogin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export const logout = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  return res.status(200).send({
-    message: "logout",
-  });
+export const logout = async (req: Request, res: Response): Promise<any> => {
+  if (req.session) {
+    req.session.destroy(() => {
+      req.session;
+    });
+  }
+  return res.redirect("/");
 };
 
 export const see = async (req: Request, res: Response): Promise<Response> => {
   return res.status(200).send({
     message: "see",
   });
+};
+
+export const startGithubLogin = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const baseUrl = "https://github.com/login/oauth/authorize";
+    const config = {
+      client_id: process.env.GITHUB_CLIENT || "",
+      allow_signup: "false",
+      scope: "read:user user:email",
+    };
+    const params = new URLSearchParams(config).toString();
+    const finalUrl = baseUrl + "?" + params;
+    console.log("Final URL :", finalUrl);
+    return res.redirect(finalUrl);
+  } catch {
+    return res.redirect("/login");
+  }
+};
+
+export const finishGithubLogin = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const baseUrl = "https://github.com/login/oauth/access_token";
+    const config = {
+      client_id: process.env.GITHUB_CLIENT || "",
+      client_secret: process.env.GITHUB_SECRET || "",
+      code: (req.query.code as string) || "",
+    };
+    const params = new URLSearchParams(config).toString();
+    const finalUrl = baseUrl + "?" + params;
+    const tokenRequest = await (
+      await fetch(finalUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+      })
+    ).json();
+    if ("access_token" in tokenRequest) {
+      const { access_token } = tokenRequest;
+      const apiUrl = "https://api.github.com";
+      const userData = await (
+        await fetch(`${apiUrl}/user`, {
+          headers: {
+            Authorization: `token ${access_token}`,
+          },
+        })
+      ).json();
+      const emailData = await (
+        await fetch(`${apiUrl}/user/emails`, {
+          headers: {
+            Authorization: `token ${access_token}`,
+          },
+        })
+      ).json();
+      interface IEmailObj {
+        email: string;
+        primary: boolean;
+        verified: boolean;
+        visibility: string | null;
+      }
+      const emailObj: IEmailObj = emailData.find(
+        (email: IEmailObj) => email.primary === true && email.verified === true
+      );
+      if (!emailObj) {
+        return res.redirect("/login");
+      }
+      let user = await UserModel.findOne({ email: emailObj.email });
+      if (!user) {
+        user = await UserModel.create({
+          name: userData.name,
+          username: userData.login,
+          email: emailObj.email,
+          password: "",
+          socialOnly: true,
+          location: userData.location,
+          avatarUrl: userData.avatar_url,
+        });
+      }
+      if (req.session) {
+        req.session.loggedIn = true;
+        req.session.user = user;
+      }
+      return res.redirect("/");
+    } else {
+      return res.redirect("/login");
+    }
+  } catch {
+    return res.redirect("/login");
+  }
 };
