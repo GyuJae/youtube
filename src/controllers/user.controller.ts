@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import UserModel from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
+import VideoModel from "../models/Video";
 
 const BCRYPT_SALT = 10;
 const USER_ERROR = "User Error occured.";
@@ -66,6 +67,7 @@ export const postEdit = async (req: Request, res: Response): Promise<any> => {
     const {
       session,
       body: { name, email, username, location },
+      file,
     } = req;
     const updatedUser = await UserModel.findByIdAndUpdate(
       session?.user._id,
@@ -74,6 +76,7 @@ export const postEdit = async (req: Request, res: Response): Promise<any> => {
         email,
         username,
         location,
+        avatarUrl: file ? file.path : session?.user.avatarUrl,
       },
       { new: true }
     );
@@ -138,10 +141,20 @@ export const logout = async (req: Request, res: Response): Promise<any> => {
   return res.redirect("/");
 };
 
-export const see = async (req: Request, res: Response): Promise<Response> => {
-  return res.status(200).send({
-    message: "see",
-  });
+export const see = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const {
+      params: { id },
+    } = req;
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return res.render("404", { pageTitle: "User not found" });
+    }
+    const videos = await VideoModel.find({ owner: user._id });
+    return res.render("profile", { pageTitle: user.name, user, videos });
+  } catch {
+    return res.redirect("/");
+  }
 };
 
 export const startGithubLogin = async (

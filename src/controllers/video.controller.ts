@@ -110,11 +110,14 @@ export const getUpload = async (req: Request, res: Response): Promise<any> => {
 export const postUpload = async (req: Request, res: Response): Promise<any> => {
   try {
     const { title, description, hashtags } = req.body;
-    // throw new Error("error bye bye")
+    const { session } = req;
+    const { file } = req;
     await VideoModel.create({
       title,
       description,
       hashtags: makeHashtags(hashtags),
+      fileUrl: file?.path,
+      owner: session?.user._id,
     });
     return res.redirect("/");
   } catch (error) {
@@ -127,10 +130,18 @@ export const postUpload = async (req: Request, res: Response): Promise<any> => {
 export const remove = async (req: Request, res: Response): Promise<any> => {
   try {
     const {
-      body: { id },
+      params: { id },
+      session,
     } = req;
     if (!id) {
       return res.redirect("/");
+    }
+    const video = await VideoModel.findById(id);
+    if (!video) {
+      return res.status(404).render("404", { pageTitle: "Video not found." });
+    }
+    if (String(video.owner) !== String(session?.user._id)) {
+      return res.status(403).redirect("/");
     }
     await VideoModel.findByIdAndDelete(id);
     return res.redirect("/");

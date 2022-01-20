@@ -1,4 +1,4 @@
-import mongoose, { Date, model, Schema } from "mongoose";
+import mongoose, { Date, model, Schema, Types } from "mongoose";
 
 // interface IHashtag {
 //   type: string;
@@ -6,7 +6,6 @@ import mongoose, { Date, model, Schema } from "mongoose";
 
 interface IMeta {
   views: number;
-  rating: number;
 }
 
 interface IVideo {
@@ -15,10 +14,13 @@ interface IVideo {
   createdAt: Date;
   hashtags: string[];
   meta: IMeta;
+  fileUrl: string;
+  owner: Types.ObjectId;
 }
 
 const schema = new Schema<IVideo>({
   title: { type: String, required: true, trim: true, maxlength: 80 },
+  fileUrl: { type: String, required: true },
   description: { type: String, trim: true, minlength: 20 },
   createdAt: { type: Date, default: Date.now() },
   hashtags: [{ type: String }],
@@ -27,10 +29,11 @@ const schema = new Schema<IVideo>({
       type: Number,
       default: 0,
     },
-    rating: {
-      type: Number,
-      default: 0,
-    },
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "UserModel",
   },
 });
 

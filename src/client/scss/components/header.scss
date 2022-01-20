@@ -1,0 +1,56 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.2px solid $gray;
+  padding: 15px;
+  div.youtube-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: $red;
+    span {
+      font-size: 23px;
+      color: white;
+    }
+    font-weight: 700;
+  }
+  div.search_container {
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      input {
+        padding: 5px;
+        width: 600px;
+        height: 40px;
+        background-color: black;
+        outline: none;
+        border: none;
+        color: white;
+        margin-right: 1px;
+        &:focus {
+          outline: 1px solid $blue;
+        }
+      }
+      button {
+        height: 40px;
+        width: 60px;
+        background-color: $gray;
+        border: none;
+        font-size: 15px;
+        color: white;
+        cursor: pointer;
+      }
+    }
+  }
+  nav {
+    ul {
+      display: flex;
+      li {
+        margin-right: 10px;
+      }
+    }
+  }
+}

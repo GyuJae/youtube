@@ -2,5 +2,11 @@ extends base.pug
 include components/video
 
 block content
-    h1 Watch Video 
-    +video(video)
+    video(src="/" + video.fileUrl, controls, autoplay)
+    div
+        p=video.description
+        small=video.createdAt
+    if String(video.owner) === String(loggedInUser._id)
+        a(href=`${video.id}/edit`) Edit Video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete Video &rarr;

@@ -1,0 +1,25 @@
+header 
+    div.youtube-logo 
+        a(href="/").fab.fa-youtube 
+            span Youtube
+    div.search_container
+        form(action="POST")
+            input(type="text", placeholder="Search")
+            button(type="submit")
+                i.fas.fa-search 
+    nav
+        ul 
+            if loggedIn
+                li
+                    a(href="/users/logout")  Log Out
+                li
+                    a(href="/users/edit") Edit Profile
+                li
+                    a(href="/videos/upload") Upload
+                li 
+                    a(href=`/users/${loggedInUser._id}`) My Profile
+            else
+                li
+                    a(href="/join") Join
+                li
+                    a(href="/login") Login

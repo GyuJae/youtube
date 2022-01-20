@@ -4,7 +4,7 @@ import session from "express-session";
 import rootRouter from "./routers/root.router";
 import userRouter from "./routers/user.router";
 import videoRouter from "./routers/video.router";
-import localMiddleware from "./middlewares/localMiddleware";
+import localMiddleware from "./middlewares/localMiddleware.middleware";
 import MongoStore from "connect-mongo";
 
 const app: Application = express();
@@ -26,6 +26,8 @@ app.use(
   })
 );
 
+app.use("/uploads", express.static("uploads"));
+app.use("/static", express.static("assets"));
 app.use(localMiddleware);
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
