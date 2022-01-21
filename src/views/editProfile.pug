@@ -1,17 +1,19 @@
 extends base
 
 block content
-    h1  Edit Profile 
-
-    img(src="/" + loggedInUser.avatarUrl, width="100", height="100")
-    form(method="POST", enctype="multipart/form-data")
-        label(for="avatar") Avatar 
-        input(type="file", id="avatar", name="avatar", accept="image/*")
-        input(placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
-        input(placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
-        input(placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
-        input(placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
-        input(type="submit", value="Update Profile")
-        if !loggedInUser.socialOnly
-            hr
-            a(href="change-password") Change Password &rarr;
+    div.editProfile_container
+        img(src= loggedInUser.avatarUrl ? "/" + loggedInUser.avatarUrl : "/uploads/user.jpeg")
+        form(method="POST", enctype="multipart/form-data", autocomplete="off")
+            label.file_label(for="avatar") Choose Avatar Photo... 
+            input.public_input_file(type="file", id="avatar", name="avatar", accept="image/*")
+            label.public_label(for="name") Name 
+            input.public_input(id="name",placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
+            label.public_label(for="email") Email 
+            input.public_input(id="email",placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
+            label.public_label(for="username") Username 
+            input.public_input(id="username",placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
+            label.public_label(for="location") Location 
+            input.public_input(id="location",placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
+            input.submit(type="submit", value="Update Profile")
+            if !loggedInUser.socialOnly
+                a(href="change-password").changePassword Change Password 

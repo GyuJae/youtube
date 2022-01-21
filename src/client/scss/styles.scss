@@ -6,9 +6,12 @@
 @import "./components/header.scss";
 @import "./components/footer.scss";
 @import "./components/video.scss";
+@import "./components/input.scss";
+@import "./components/errorMessage.scss";
 
 // Screens
 @import "./screens/home.scss";
+@import "./screens/editProfile.scss";
 
 // Defaults
 a {

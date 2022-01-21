@@ -3,7 +3,7 @@ header
         a(href="/").fab.fa-youtube 
             span Youtube
     div.search_container
-        form(action="POST")
+        form(action="/search", method="get")
             input(type="text", placeholder="Search")
             button(type="submit")
                 i.fas.fa-search 
@@ -16,8 +16,9 @@ header
                     a(href="/users/edit") Edit Profile
                 li
                     a(href="/videos/upload") Upload
-                li 
-                    a(href=`/users/${loggedInUser._id}`) My Profile
+                li.my_profile 
+                    a(href=`/users/${loggedInUser._id}`) 
+                        img(src=`/${loggedInUser.avatarUrl ? loggedInUser.avatarUrl : "uploads/user.jpeg"}`)
             else
                 li
                     a(href="/join") Join

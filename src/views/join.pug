@@ -1,15 +1,20 @@
 extends base.pug
 
 block content
-    h1 Join
-    
-    if errorMessage
-        span=errorMessage  
-    form(method="POST")
-        input(placeholder="Name", name="name", type="text", required)
-        input(placeholder="Email", name="email", type="email", required)
-        input(placeholder="Username", name="username", type="text", required)
-        input(placeholder="Password", name="password", type="password", required)
-        input(placeholder="Confirm Password", name="password2", type="password", required)
-        input(placeholder="Location", name="location", type="text")
-        input(type="submit", value="Join")    
+    div.editProfile_container
+        if errorMessage
+            span.errorMessage=errorMessage  
+        form(method="POST", autocomplete="off")
+            label.public_label(for="name") Name
+            input.public_input(id="name",placeholder="Name", name="name", type="text", required)
+            label.public_label(for="email") Email
+            input.public_input(id="email",placeholder="Email", name="email", type="email", required)
+            label.public_label(for="username") Username
+            input.public_input(id="username",placeholder="Username", name="username", type="text", required)
+            label.public_label(for="password") Password
+            input.public_input(id="password",placeholder="Password", name="password", type="password", required)
+            label.public_label(for="password2") Confirm Password
+            input.public_input(id="password2",placeholder="Confirm Password", name="password2", type="password", required)
+            label.public_label(for="location") Location
+            input.public_input(id="location",placeholder="Location", name="location", type="text")
+            input.submit(type="submit", value="Join")    

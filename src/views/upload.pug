@@ -1,14 +1,16 @@
 extends base.pug
 
 block content
-    h1 Upload Video
-
-    if errorMessage
-        span=errorMessage  
-    form(method="POST", enctype="multipart/form-data")
-        label(for="video") Video File
-        input(type="file", accept="video/*", required, id="video", name="video")
-        input(placeholder="Title", required, type="text", name="title", maxlength=80)
-        input(placeholder="Description", required, type="text", name="description" minlength=20)
-        input(placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags")
-        input(type="submit", value="Upload Video")
+    div.editProfile_container
+        if errorMessage
+            span.errorMessage=errorMessage 
+        form(method="POST", enctype="multipart/form-data",autocomplete="off")
+            label.file_label(for="video") Video File
+            input.public_input_file(type="file", accept="video/*", required, id="video", name="video")
+            label.public_label(for="title") Title
+            input.public_input(id="title",placeholder="Title", required, type="text", name="title", maxlength=80)
+            label.public_label(for="description") Description
+            input.public_input(id="description",placeholder="Description", required, type="text", name="description" minlength=20)
+            label.public_label(for="hashtags") Hashtags
+            input.public_input(id="hashtags",placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags")
+            input.submit(type="submit", value="Upload Video")

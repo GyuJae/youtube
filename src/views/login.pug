@@ -1,13 +1,15 @@
 extends base.pug
 
 block content
-    h1 Login
-
-    if errorMessage
-        span=errorMessage  
-    form(method="POST")
-        input(placeholder="Username", name="username", type="text", required)
-        input(placeholder="Password", name="password", type="password", required)
-        input(type="submit", value="Login")  
-        br
-        a(href="/users/github/start") Continue with Github &rarr;
+    div.editProfile_container
+        if errorMessage
+            span.errorMessage=errorMessage  
+        form(method="POST", autocomplete="off")
+            label.public_label(for="username") Username
+            input.public_input(id="username",placeholder="Username", name="username", type="text", required)
+            label.public_label(for="password") Password
+            input.public_input(id="password",placeholder="Password", name="password", type="password", required)
+            input.submit(type="submit", value="Login")  
+            a(href="/users/github/start").github_container  
+                i.fab.fa-github
+                span Continue with Github
