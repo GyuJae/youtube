@@ -1,0 +1,36 @@
+div.video_detail_container {
+  display: flex;
+  flex-direction: column;
+  div.video_detail_video {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    max-height: 600px;
+    padding: 10px 0px;
+  }
+  div.video_detail_description {
+    padding: 10px 100px;
+    div.video_detail_description_title {
+      font-size: 25px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    div.video_detail_description_description {
+      font-size: 15px;
+      opacity: 0.7;
+    }
+  }
+  div.owner_container {
+    display: flex;
+    padding: 10px 100px;
+    a {
+      margin-right: 10px;
+      background-color: $gray;
+      padding: 10px 5px;
+      border-radius: 5px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+  }
+}

@@ -20,14 +20,21 @@ export const watch = async (req: Request, res: Response): Promise<any> => {
   try {
     const {
       params: { id },
+      session,
     } = req;
     const video = await VideoModel.findById(id);
     if (!video) {
       return res.status(404).render("404", { pageTitle: VIDEO_NOT_FOUND });
     }
+    let owner = false;
+    if (session && session.user) {
+      if (video.owner.toString() === session.user._id) {
+        owner = true;
+      }
+    }
     return res
       .status(200)
-      .render("watch", { pageTitle: video?.title || "Watch", video });
+      .render("watch", { pageTitle: video?.title || "Watch", video, owner });
   } catch {
     return res.redirect("/");
   }

@@ -10,9 +10,15 @@ header {
     justify-content: center;
     font-size: 28px;
     color: $red;
-    span {
-      font-size: 23px;
-      color: white;
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
+        font-size: 23px;
+        color: white;
+        margin-left: 5px;
+      }
     }
     font-weight: 700;
   }
