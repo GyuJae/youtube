@@ -3,7 +3,10 @@ extends base.pug
 block content
     div.editProfile_container
         if errorMessage
-            span.errorMessage=errorMessage 
+            span.errorMessage=errorMessage
+        div.recoder_btn_container
+            video.recoder_preview
+            button.recoder_btn Recoder 
         form(method="POST", enctype="multipart/form-data",autocomplete="off")
             label.file_label(for="video") Video File
             input.public_input_file(type="file", accept="video/*", required, id="video", name="video")
@@ -14,3 +17,5 @@ block content
             label.public_label(for="hashtags") Hashtags
             input.public_input(id="hashtags",placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags")
             input.submit(type="submit", value="Upload Video")
+        block scripts
+            script(src="/static/js/recoder.js") 

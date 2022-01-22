@@ -156,3 +156,26 @@ export const remove = async (req: Request, res: Response): Promise<any> => {
     return res.redirect("/");
   }
 };
+
+export const registerView = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const {
+      params: { id },
+    } = req;
+    if (!id) {
+      return res.sendStatus(404);
+    }
+    const video = await VideoModel.findById(id);
+    if (!video) {
+      return res.sendStatus(404);
+    }
+    video.meta.views = video.meta.views + 1;
+    await video.save();
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.sendStatus(404);
+  }
+};

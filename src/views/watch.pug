@@ -4,12 +4,16 @@ include components/video
 block content
     div.video_detail_container
         div.video_detail_video
-            video(src="/" + video.fileUrl, controls, autoplay, height="600px")
+            video(src="/" + video.fileUrl, controls, autoplay, height="600px",data-id=video._id)
         div.video_detail_description
             div.video_detail_description_title=video.title
             div.video_detail_description_description=video.description
+            div.video_detail_description_description=video.meta.views
         if owner
             div.owner_container
                 a(href=`${video.id}/edit`) Edit Video
                 br
                 a(href=`${video.id}/delete`) Delete Video
+
+block scripts
+    script(src="/static/js/videoPlayer.js") 

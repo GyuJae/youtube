@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import morgan from "morgan";
 import session from "express-session";
+import apiRouter from "./routers/api.router";
 import rootRouter from "./routers/root.router";
 import userRouter from "./routers/user.router";
 import videoRouter from "./routers/video.router";
@@ -32,5 +33,6 @@ app.use(localMiddleware);
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
+app.use("/apis", apiRouter);
 
 export default app;
