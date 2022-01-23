@@ -1,7 +1,7 @@
 mixin video(video)
     div.video_container
         a(href=`/videos/${video.id}`)
-            div.video
+            img(src=video.thumbnail).thumbnail
             div.title #{video.title}
             div.views #{video.meta.views} views
             

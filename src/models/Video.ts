@@ -11,6 +11,7 @@ interface IMeta {
 interface IVideo {
   title: string;
   description: string;
+  thumbnail: string;
   createdAt: Date;
   hashtags: string[];
   meta: IMeta;
@@ -21,6 +22,7 @@ interface IVideo {
 const schema = new Schema<IVideo>({
   title: { type: String, required: true, trim: true, maxlength: 80 },
   fileUrl: { type: String, required: true },
+  thumbnail: { type: String, required: true },
   description: { type: String, trim: true, minlength: 20 },
   createdAt: { type: Date, default: Date.now() },
   hashtags: [{ type: String }],

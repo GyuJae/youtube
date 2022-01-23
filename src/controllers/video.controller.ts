@@ -118,13 +118,16 @@ export const postUpload = async (req: Request, res: Response): Promise<any> => {
   try {
     const { title, description, hashtags } = req.body;
     const { session } = req;
-    const { file } = req;
+    const {
+      files: { video, thumbnail },
+    } = req;
     await VideoModel.create({
       title,
       description,
       hashtags: makeHashtags(hashtags),
-      fileUrl: file?.path,
+      fileUrl: video[0].path,
       owner: session?.user._id,
+      thumbnail: thumbnail[0].path,
     });
     return res.redirect("/");
   } catch (error) {
