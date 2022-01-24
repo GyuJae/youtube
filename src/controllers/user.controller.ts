@@ -10,7 +10,8 @@ const USER_ERROR = "User Error occured.";
 export const getJoin = async (req: Request, res: Response): Promise<any> => {
   try {
     return res.render("join", { pageTitle: "Create Account" });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -30,15 +31,15 @@ export const postJoin = async (req: Request, res: Response): Promise<any> => {
     }
     const emailExist = await UserModel.exists({ email });
     if (emailExist) {
+      req.flash("error", "This Email already exist");
       return res.status(400).render("join", {
         pageTitle,
-        errorMessage: "This Email already exist",
       });
     }
     if (password !== password2) {
+      req.flash("error", "Password not equal.");
       return res.status(400).render("join", {
         pageTitle,
-        errorMessage: "Password not equal.",
       });
     }
     await UserModel.create({
@@ -48,8 +49,10 @@ export const postJoin = async (req: Request, res: Response): Promise<any> => {
       password: await bcrypt.hash(password, BCRYPT_SALT),
       location,
     });
+    req.flash("success", "Success Create Account! You can log in!");
     return res.redirect("/login");
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -57,7 +60,8 @@ export const postJoin = async (req: Request, res: Response): Promise<any> => {
 export const getEdit = async (req: Request, res: Response): Promise<any> => {
   try {
     return res.render("editProfile", { pageTitle: "Edit Profile" });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -83,19 +87,12 @@ export const postEdit = async (req: Request, res: Response): Promise<any> => {
     if (req.session) {
       req.session.user = updatedUser;
     }
+    req.flash("success", `Success Video Edit!`);
     return res.redirect("/");
   } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
-};
-
-export const remove = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  return res.status(200).send({
-    message: "remove",
-  });
 };
 
 export const getLogin = async (req: Request, res: Response): Promise<any> => {
@@ -110,30 +107,33 @@ export const postLogin = async (req: Request, res: Response): Promise<any> => {
     } = req;
     const user = await UserModel.findOne({ username, socialOnly: false });
     if (!user) {
+      req.flash("error", "An account with this username does not exists.");
       return res.status(400).render("login", {
         pageTitle,
-        errorMessage: "An account with this username does not exists.",
       });
     }
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
+      req.flash("error", "Wrong password");
       return res.status(400).render("login", {
         pageTitle,
-        errorMessage: "Wrong password",
       });
     }
     if (req.session) {
       req.session.loggedIn = true;
       req.session.user = user;
     }
+    req.flash("success", "Log In Success!");
     return res.redirect("/");
   } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.status(404).render("404", { pageTitle: USER_ERROR });
   }
 };
 
 export const logout = async (req: Request, res: Response): Promise<any> => {
   if (req.session) {
+    req.flash("success", "Success Log out!");
     req.session.destroy(() => {
       req.session;
     });
@@ -148,11 +148,13 @@ export const see = async (req: Request, res: Response): Promise<any> => {
     } = req;
     const user = await UserModel.findById(id);
     if (!user) {
+      req.flash("error", "This user not found.");
       return res.render("404", { pageTitle: "User not found" });
     }
     const videos = await VideoModel.find({ owner: user._id });
     return res.render("profile", { pageTitle: user.name, user, videos });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -170,9 +172,10 @@ export const startGithubLogin = async (
     };
     const params = new URLSearchParams(config).toString();
     const finalUrl = baseUrl + "?" + params;
-    console.log("Final URL :", finalUrl);
+    req.flash("success", "Success Github Login");
     return res.redirect(finalUrl);
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/login");
   }
 };
@@ -243,6 +246,7 @@ export const finishGithubLogin = async (
         req.session.loggedIn = true;
         req.session.user = user;
       }
+      req.flash("success", "Success Github Login");
       return res.redirect("/");
     } else {
       return res.redirect("/login");
@@ -258,10 +262,12 @@ export const getChangePassword = async (
 ): Promise<any> => {
   try {
     if (req.session?.user.socialOnly) {
+      req.flash("error", "you don't have password");
       return res.redirect("/");
     }
     return res.render("changePassword", { pageTitle: "Change Password" });
   } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -282,21 +288,23 @@ export const postChangePassword = async (
     }
     const ok = await bcrypt.compare(oldPassword, user?.password);
     if (!ok) {
+      req.flash("error", "The current password is incorrect");
       return res.status(400).render("changePassword", {
         pageTitle,
-        errorMessage: "The current password is incorrect",
       });
     }
     if (newPassword !== newPassword2) {
+      req.flash("error", "The password does not match the confirmation");
       return res.status(400).render("changePassword", {
         pageTitle,
-        errorMessage: "The password does not match the confirmation",
       });
     }
     user.password = await bcrypt.hash(newPassword, BCRYPT_SALT);
     await user.save();
+    req.flash("success", "Success Change Password!");
     return res.redirect("/users/logout");
   } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };

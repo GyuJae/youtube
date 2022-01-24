@@ -7,6 +7,7 @@ import userRouter from "./routers/user.router";
 import videoRouter from "./routers/video.router";
 import localMiddleware from "./middlewares/localMiddleware.middleware";
 import MongoStore from "connect-mongo";
+import flash from "express-flash";
 
 const app: Application = express();
 const logger = morgan("dev");
@@ -27,6 +28,7 @@ app.use(
   })
 );
 
+app.use(flash());
 app.use("/uploads", express.static("uploads"));
 app.use(
   "/static",

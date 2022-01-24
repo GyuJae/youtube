@@ -8,6 +8,7 @@ export const protectorMiddleware = (
   if (req.session?.loggedIn) {
     return next();
   }
+  req.flash("error", "Not authorized");
   return res.redirect("/");
 };
 
@@ -19,5 +20,6 @@ export const publicOnlyMiddleware = (
   if (!req.session?.loggedIn) {
     return next();
   }
+  req.flash("error", "Not authorized");
   return res.redirect("/");
 };

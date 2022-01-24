@@ -35,7 +35,8 @@ export const watch = async (req: Request, res: Response): Promise<any> => {
     return res
       .status(200)
       .render("watch", { pageTitle: video?.title || "Watch", video, owner });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -56,7 +57,8 @@ export const getEdit = async (req: Request, res: Response): Promise<any> => {
     return res
       .status(200)
       .render("editVideo", { pageTitle: "Edit " + video.title, video: video });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -67,6 +69,7 @@ export const postEdit = async (req: Request, res: Response): Promise<any> => {
       params: { id },
     } = req;
     if (!id) {
+      req.flash("error", "This video id wrong;;");
       return res.redirect("/");
     }
     const video = await VideoModel.exists({ _id: id });
@@ -81,8 +84,10 @@ export const postEdit = async (req: Request, res: Response): Promise<any> => {
       description,
       hashtags: makeHashtags(hashtags),
     });
+    req.flash("success", `Success Edit Video!`);
     return res.redirect(`/videos/${id}`);
   } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -93,6 +98,7 @@ export const search = async (req: Request, res: Response): Promise<any> => {
       query: { keyword },
     } = req;
     if (!keyword) {
+      req.flash("error", "Please put keyword");
       return res.redirect("/");
     }
     const videos = await VideoModel.find({
@@ -101,7 +107,8 @@ export const search = async (req: Request, res: Response): Promise<any> => {
       },
     });
     return res.status(200).render("search", { pageTitle: keyword, videos });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };
@@ -109,7 +116,8 @@ export const search = async (req: Request, res: Response): Promise<any> => {
 export const getUpload = async (req: Request, res: Response): Promise<any> => {
   try {
     return res.status(200).render("upload", { pageTitle: "Upload" });
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.render("404", { pageTitle: "Error" });
   }
 };
@@ -129,11 +137,11 @@ export const postUpload = async (req: Request, res: Response): Promise<any> => {
       owner: session?.user._id,
       thumbnail: thumbnail[0].path,
     });
+    req.flash("success", `Success Upload Video!`);
     return res.redirect("/");
   } catch (error) {
-    return res
-      .status(400)
-      .render("upload", { pageTitle: "Upload", errorMessage: error });
+    req.flash("error", `Error: ${error}`);
+    return res.status(400).render("upload", { pageTitle: "Upload" });
   }
 };
 
@@ -144,18 +152,23 @@ export const remove = async (req: Request, res: Response): Promise<any> => {
       session,
     } = req;
     if (!id) {
+      req.flash("error", "This video id is wrong.");
       return res.redirect("/");
     }
     const video = await VideoModel.findById(id);
     if (!video) {
+      req.flash("error", "This video is not exist.");
       return res.status(404).render("404", { pageTitle: "Video not found." });
     }
     if (String(video.owner) !== String(session?.user._id)) {
+      req.flash("error", `Not authorized`);
       return res.status(403).redirect("/");
     }
     await VideoModel.findByIdAndDelete(id);
+    req.flash("success", `Success Delete Video!`);
     return res.redirect("/");
-  } catch {
+  } catch (error) {
+    req.flash("error", `Error: ${error}`);
     return res.redirect("/");
   }
 };

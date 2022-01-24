@@ -6,7 +6,6 @@ import {
   logout,
   postChangePassword,
   postEdit,
-  remove,
   startGithubLogin,
   see,
 } from "../controllers/user.controller";
@@ -29,7 +28,6 @@ userRouter
   .all(protectorMiddleware)
   .get(getChangePassword)
   .post(postChangePassword);
-userRouter.get("/remove", protectorMiddleware, remove);
 userRouter.get("/github/start", publicOnlyMiddleware, startGithubLogin);
 userRouter.get("/github/callback", publicOnlyMiddleware, finishGithubLogin);
 userRouter.route("/:id([0-9a-f]{24})").get(see);

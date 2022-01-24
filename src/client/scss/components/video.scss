@@ -4,9 +4,13 @@ div.video_container {
   justify-content: center;
   align-items: center;
   img.thumbnail {
-    width: 290px;
-    height: 180px;
+    width: 250px;
+    height: 140px;
     border-radius: 2px;
+    object-fit: scale-down;
+    background-color: black;
+    border-radius: 5px;
+    margin-bottom: 5px;
   }
   div.title {
     font-size: 17px;
