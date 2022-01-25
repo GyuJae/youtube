@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { model, Schema, Types } from "mongoose";
 
 interface IUser {
   email: string;
@@ -8,6 +8,8 @@ interface IUser {
   location?: string;
   socialOnly: boolean;
   avatarUrl?: string;
+  comments: Types.ObjectId[];
+  videos: Types.ObjectId[];
 }
 
 const schema = new Schema<IUser>({
@@ -22,8 +24,18 @@ const schema = new Schema<IUser>({
   name: { type: String, required: true },
   location: String,
   avatarUrl: String,
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "CommentModel",
+    },
+  ],
+  videos: [
+    { type: mongoose.Schema.Types.ObjectId, required: true, ref: "VideoModel" },
+  ],
 });
 
-const UserModel = model("User", schema);
+const UserModel = model("UserModel", schema);
 
 export default UserModel;

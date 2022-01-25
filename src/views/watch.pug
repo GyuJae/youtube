@@ -8,12 +8,31 @@ block content
         div.video_detail_description
             div.video_detail_description_title=video.title
             div.video_detail_description_description=video.description
-            div.video_detail_description_description=video.meta.views
+            div.video_detail_description_description #{video.meta.views} views
+            div.video_detail_description_description=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
         if owner
             div.owner_container
                 a(href=`${video.id}/edit`) Edit Video
                 br
                 a(href=`${video.id}/delete`) Delete Video
-
+        if loggedIn
+            div.video_comments
+                form.video_comment_form
+                    div(role="textbox" contenteditable="true")
+                    button(type="submit") Add Comment
+        div.comments_container
+            div.comments_container_title
+                span Comments #{comments.length}
+            each comment in comments.reverse() 
+                div.comments_container_payload
+                    div.comments_container_payload_left
+                        img.avatarUrl(src=`/${comment.avatarUrl ? comment.avatarUrl : "uploads/user.jpeg"}`)
+                    div.comments_container_payload_right
+                        div.username
+                            div.username_item=comment.username
+                            div.createdAt=new Date(comment.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })
+                        div.payload=comment.payload
 block scripts
     script(src="/static/js/videoPlayer.js") 
+    if loggedIn
+        script(src="/static/js/commentSection.js")

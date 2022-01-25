@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import CommentModel from "../models/Comment";
+import UserModel from "../models/User";
 import VideoModel from "../models/Video";
 import makeHashtags from "../utils/makeHashtags";
 
@@ -26,15 +28,31 @@ export const watch = async (req: Request, res: Response): Promise<any> => {
     if (!video) {
       return res.status(404).render("404", { pageTitle: VIDEO_NOT_FOUND });
     }
+    const comments = await CommentModel.find({ videoId: id });
+    const resultComments = await Promise.all(
+      comments.map(async (comment) => {
+        const user = await UserModel.findById(comment.ownerId);
+        return {
+          id: comment._id,
+          username: user?.username,
+          avatarUrl: user?.avatarUrl,
+          payload: comment.payload,
+          createdAt: comment.createdAt,
+        };
+      })
+    );
     let owner = false;
     if (session && session.user) {
       if (video.owner.toString() === session.user._id) {
         owner = true;
       }
     }
-    return res
-      .status(200)
-      .render("watch", { pageTitle: video?.title || "Watch", video, owner });
+    return res.status(200).render("watch", {
+      pageTitle: video?.title || "Watch",
+      video,
+      owner,
+      comments: resultComments,
+    });
   } catch (error) {
     req.flash("error", `Error: ${error}`);
     return res.redirect("/");
@@ -194,4 +212,18 @@ export const registerView = async (
   } catch (error) {
     return res.sendStatus(404);
   }
+};
+
+export const createComment = async (req: Request, res: Response) => {
+  const { session, body, params } = req;
+  const video = await VideoModel.findById(params.id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  const comment = await CommentModel.create({
+    payload: body.text,
+    videoId: params.id,
+    ownerId: session?.user._id,
+  });
+  return res.sendStatus(201);
 };

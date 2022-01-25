@@ -13,12 +13,17 @@ div.video_container {
     margin-bottom: 5px;
   }
   div.title {
-    font-size: 17px;
-    font-weight: 900;
+    font-size: 15px;
+    font-weight: 500;
     margin-bottom: 5px;
   }
   div.views {
-    font-size: 14px;
-    opacity: 0.7;
+    font-size: 12px;
+    opacity: 0.6;
+    margin-bottom: 5px;
+  }
+  div.createdAt {
+    font-size: 10px;
+    opacity: 0.5;
   }
 }

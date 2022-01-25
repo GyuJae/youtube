@@ -4,4 +4,5 @@ mixin video(video)
             img(src=video.thumbnail).thumbnail
             div.title #{video.title}
             div.views #{video.meta.views} views
+            div.createdAt #{new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}
             

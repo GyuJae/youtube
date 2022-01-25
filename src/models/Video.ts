@@ -17,6 +17,7 @@ interface IVideo {
   meta: IMeta;
   fileUrl: string;
   owner: Types.ObjectId;
+  comments: Types.ObjectId[];
 }
 
 const schema = new Schema<IVideo>({
@@ -39,6 +40,6 @@ const schema = new Schema<IVideo>({
   },
 });
 
-const VideoModel = model<IVideo>("Video", schema);
+const VideoModel = model<IVideo>("VideoModel", schema);
 
 export default VideoModel;
