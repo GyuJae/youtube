@@ -15,16 +15,18 @@ block content
                 a(href=`${video.id}/edit`) Edit Video
                 br
                 a(href=`${video.id}/delete`) Delete Video
-        if loggedIn
-            div.video_comments
-                form.video_comment_form
-                    div(role="textbox" contenteditable="true")
-                    button(type="submit") Add Comment
         div.comments_container
             div.comments_container_title
                 span Comments #{comments.length}
+            if loggedIn
+                div.video_comments
+                    div.my_avatar
+                        img(src=`/${loggedInUser.avatarUrl ? loggedInUser.avatarUrl : "uploads/user.jpeg"}`)
+                    form.video_comment_form
+                        div.textarea(role="textbox" contenteditable="true")
+                        button(type="submit") Comment
             each comment in comments.reverse() 
-                div.comments_container_payload
+                div.comments_container_payload(data-id=comment.id)
                     div.comments_container_payload_left
                         img.avatarUrl(src=`/${comment.avatarUrl ? comment.avatarUrl : "uploads/user.jpeg"}`)
                     div.comments_container_payload_right
@@ -32,6 +34,10 @@ block content
                             div.username_item=comment.username
                             div.createdAt=new Date(comment.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', })
                         div.payload=comment.payload
+                        
+                        if loggedInUser._id===comment.ownerId
+                            div.comment_delete(data-id=comment.id) 
+                                i.fas.fa-trash
 block scripts
     script(src="/static/js/videoPlayer.js") 
     if loggedIn

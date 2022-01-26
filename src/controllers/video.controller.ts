@@ -36,6 +36,7 @@ export const watch = async (req: Request, res: Response): Promise<any> => {
           id: comment._id,
           username: user?.username,
           avatarUrl: user?.avatarUrl,
+          ownerId: user?.id,
           payload: comment.payload,
           createdAt: comment.createdAt,
         };
@@ -220,10 +221,33 @@ export const createComment = async (req: Request, res: Response) => {
   if (!video) {
     return res.sendStatus(404);
   }
-  const comment = await CommentModel.create({
+  await CommentModel.create({
     payload: body.text,
     videoId: params.id,
     ownerId: session?.user._id,
   });
   return res.sendStatus(201);
+};
+
+export const deleteComment = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    const { session, params } = req;
+    const comment = await CommentModel.findById(params.id);
+    if (!comment) {
+      req.flash("error", "Cannot found Comment");
+      return res.sendStatus(404);
+    }
+    if (String(comment?.ownerId) !== session?.user._id) {
+      req.flash("error", "Not authorized");
+      return res.sendStatus(404);
+    }
+    await CommentModel.deleteOne({ _id: comment.id });
+    return res.sendStatus(201);
+  } catch (error) {
+    req.flash("error", `Error ${error}`);
+    return res.redirect("/");
+  }
 };

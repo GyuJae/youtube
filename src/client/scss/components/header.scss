@@ -23,6 +23,10 @@ header {
     font-weight: 700;
   }
   div.search_container {
+    @media screen and (max-width: 1000px) {
+      display: none;
+    }
+
     form {
       display: flex;
       justify-content: center;
